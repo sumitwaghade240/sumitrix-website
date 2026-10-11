@@ -1,19 +1,23 @@
-# Three-Niche Freelance Website Portfolio
+# SUMITRIX — Creative Developer Portfolio & Three-Niche Freelance Showcase
 
-A high-performance, responsive multi-site portfolio built with pure **HTML5, CSS3, and modern JavaScript**. Designed for a frontend developer to pitch and deliver revenue-generating websites to local business clients across three high-demand niches with **zero monthly software fees**.
+A dual-purpose creative engineering platform designed for a frontend developer:
+1. **Ultra-Premium 3D Agency Portfolio (`/`)**: Built with **React 19, TypeScript, Tailwind CSS, Vite, and Three.js (WebGL physics & interactive kinetic typography)** to pitch high-end creative web development to agencies and brands.
+2. **Three Niche Local Business Websites**: Built with **pure HTML5, CSS3, and JavaScript** with **zero monthly platform fees** and an automated WhatsApp headless checkout bridge.
+3. **Preserved Static Portfolio (`/legacy_portfolio/`)**: Archived vanilla single-page portfolio for zero-dependency environments.
 
 ---
 
 ## 🌟 Portfolio Overview & Live Demos
 
-This project contains **three complete, distinct niche experiences** plus a **unified freelance developer portfolio homepage**:
+This project contains **three complete, distinct niche experiences** plus the **creative developer portfolio**:
 
 | Experience | Directory | Target Client Type | Core Workflow |
 | :--- | :--- | :--- | :--- |
-| **Freelance Portfolio** | `/index.html` | Prospective business clients | Pitch, package comparison, structured WhatsApp project enquiry generator |
+| **SUMITRIX Modern 3D Portfolio** | `/` (`src/`) | Agencies, startups & creative brands | Interactive 3D WebGL sphere, package pricing & multi-step WhatsApp inquiry wizard |
 | **StyleCart** | `/stylecart/` | Clothing shops & fashion boutiques | Variant selectors (Size/Colour), cart drawer & automated WhatsApp order dispatch |
 | **FitForge** | `/fitforge/` | Gyms, fitness studios & athletic clubs | Facility showcase, trial pass booking & membership enquiry via WhatsApp |
 | **LensCraft** | `/lenscraft/` | Wedding & portrait photographers | Categorized photo stories, accessible lightbox & booking availability enquiry |
+| **Static Legacy Portfolio** | `/legacy_portfolio/` | Reference & lightweight hosting | Standalone vanilla HTML5/CSS3/JS predecessor with enquiry modal |
 
 ---
 
@@ -32,24 +36,34 @@ When pitching to local retail shop and gym owners, explain why pure standard cod
 
 ```text
 lenscraft-photography-website/
-├── index.html                  # Freelance Portfolio Homepage (Showcase of all 3 niches)
-├── style.css                   # Portfolio design system & executive dark styling
-├── script.js                   # Portfolio interactive logic & client enquiry builder
+├── index.html                  # Modern Vite SPA Entry Point
+├── vite.config.ts              # Vite 6 config with vendor chunk code-splitting
+├── tailwind.config.js          # Custom dark tokens & neon lime palette
+├── tsconfig.json               # Strict TypeScript configuration
+├── package.json                # Dependencies (React 19, Three.js, Lucide, GSAP, etc.)
+│
+├── src/                        # Modern Creative 3D Web Application
+│   ├── components/             # UI Sections & 3D WebGL Canvas
+│   │   ├── 3d/                 # SceneCanvas & ShatteredSphere (React Three Fiber)
+│   │   ├── Hero.tsx            # Kinetic typography & lazy-loaded 3D WebGL canvas
+│   │   ├── Projects.tsx        # Project showcase linking to niche demo sites
+│   │   ├── Pricing.tsx         # Tiered client service packages
+│   │   ├── Contact.tsx         # Interactive inquiry generator & WhatsApp bridge
+│   │   └── ...                 # Navbar, CustomCursor, Services, About, Footer
+│   ├── data/                   # Data models (projectsData.ts, servicesData.ts)
+│   ├── App.tsx                 # Root coordinator component
+│   └── main.tsx                # React DOM mount point
+│
+├── public/                     # Static assets automatically served & bundled to dist/
+│   ├── fitforge/               # Niche Demo 2: Gym Website (Static)
+│   ├── lenscraft/              # Niche Demo 3: Photography Portfolio (Static)
+│   ├── stylecart/              # Niche Demo 1: Boutique Store (Static)
+│   └── legacy_portfolio/       # Archived Static Freelance Portfolio (Static)
 │
 ├── stylecart/                  # Niche 1: Boutique Clothing Store Catalogue
-│   ├── index.html              # Mobile-first fashion catalogue with cart drawer
-│   ├── style.css               # Chic boutique typography, swatches & layout
-│   └── script.js               # Products data, cart state, size/color logic, WhatsApp order
-│
 ├── fitforge/                   # Niche 2: Gym & Fitness Athletic Club
-│   ├── index.html              # High-energy athletic website layout
-│   ├── style.css               # Dark theme, plans comparison & trial form styling
-│   └── script.js               # Free trial validation & membership WhatsApp dispatcher
-│
 ├── lenscraft/                  # Niche 3: Photography Portfolio
-│   ├── index.html              # Editorial photography studio layout
-│   ├── style.css               # Warm earth-tone palette, lightbox & preview modal styles
-│   └── script.js               # Gallery filter, keyboard lightbox & WhatsApp booking
+├── legacy_portfolio/           # Canonical Static Legacy Single-Page Portfolio
 │
 └── README.md                   # Client launch configuration guide & documentation
 ```
@@ -60,15 +74,14 @@ lenscraft-photography-website/
 
 Before deploying any of these websites for a paying client or production launch, replace all placeholder configurations and demo content detailed below:
 
-### 1. Developer Portfolio (`/` root)
+### 1. Developer Portfolio
 
-| File | Configuration / Content | Current Default | Client / Production Replacement |
-| :--- | :--- | :--- | :--- |
-| `script.js` | `DEVELOPER_WHATSAPP_NUMBER` | `"91XXXXXXXXXX"` | Developer's real WhatsApp number (10–15 digits without `+` or spaces). |
-| `script.js` | `DEVELOPER_NAME` | `"Sumit Waghade"` | Freelancer's real display name used in automated messages. |
-| `index.html` | Brand name & logo badge | `SUMITRIX`, `SW` | Your personal or agency brand identity (Sumit Waghade, Creative Developer). |
-| `index.html` | Package pricing & features | Shop (₹999), Portfolio (₹1,999), Business (₹4,999), 3D Lab (₹29,999) | Your actual freelance service rates and project terms. |
-| `index.html` | Meta title & description | SUMITRIX — Sumit Waghade | Creative Developer | Your localized SEO keywords. |
+| Experience | File | Configuration / Content | Current Default | Client / Production Replacement |
+| :--- | :--- | :--- | :--- | :--- |
+| **Modern React SPA** | `src/components/Contact.tsx` | `DEVELOPER_WHATSAPP_NUMBER` | `"91XXXXXXXXXX"` | Developer's real WhatsApp number (10–15 digits without `+` or spaces). |
+| **Modern React SPA** | `src/components/Contact.tsx` | Developer Name | `"Sumit Waghade"` | Freelancer's real display name used in automated messages. |
+| **Legacy Static** | `legacy_portfolio/script.js` | `DEVELOPER_WHATSAPP_NUMBER` | `"91XXXXXXXXXX"` | Developer's real WhatsApp number in static archive. |
+| **Global Meta** | `index.html` | Meta title & description | SUMITRIX — Sumit Waghade | Your localized SEO keywords. |
 
 ### 2. StyleCart Boutique (`/stylecart/`)
 

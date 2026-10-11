@@ -1,8 +1,15 @@
 /**
  * ============================================================================
- * Unified Freelance Web Developer Portfolio — Interactive Engine
+ * [DEPRECATED / ARCHIVAL NOTICE]
  * ============================================================================
- * 
+ * Notice: The primary root portfolio at /index.html has been upgraded to a
+ * modern React 19 + TypeScript + Three.js application located in `/src/`.
+ * Interactive logic and inquiry builders are now located in `/src/components/Contact.tsx`.
+ *
+ * For the standalone zero-dependency static version of this portfolio, see:
+ * `/legacy_portfolio/script.js`
+ * ============================================================================
+ */
 /**
  * CONFIGURATION:
  * Replace '91XXXXXXXXXX' with the freelance developer's real WhatsApp number

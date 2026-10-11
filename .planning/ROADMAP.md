@@ -19,11 +19,13 @@
   - Eliminate the 500kB+ bundle size warning.
   - Establish local asset fallbacks for critical external demo photography.
 
-- [ ] **Phase 3: Repository Hygiene & Legacy Alignment**
+- [x] **Phase 3: Repository Hygiene & Legacy Alignment**
   - Deprecate or document root duplicate legacy files (`script.js`, `style.css`) in favor of canonical `legacy_portfolio/`.
   - Validate all internal routing links (`/stylecart/index.html`, `/fitforge/index.html`, `/lenscraft/index.html`).
 
 ---
+
+## Milestone 1 Complete (100% - 3/3 Phases Verified)
 
 ## Milestone 2: Client Customization & Production Deployment Tooling (Planned)
 
