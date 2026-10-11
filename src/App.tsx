@@ -37,6 +37,9 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const [selectedCountryCode, setSelectedCountryCode] = useState('IN');
+  const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
+
   return (
     <div className="relative min-h-screen bg-dark-950 text-white selection:bg-neon-lime selection:text-black">
       {/* Precision Custom Cursor */}
@@ -53,10 +56,19 @@ export const App: React.FC = () => {
         <Hero onShatterStateChange={setIsShatteredState} />
         <Projects />
         <Services />
-        <Pricing />
+        <Pricing
+          selectedCountryCode={selectedCountryCode}
+          onSelectCountry={setSelectedCountryCode}
+          onSelectPackage={setSelectedPackageId}
+        />
         <About />
         <Process />
-        <Contact />
+        <Contact
+          selectedCountryCode={selectedCountryCode}
+          onSelectCountry={setSelectedCountryCode}
+          selectedPackageId={selectedPackageId}
+          onSelectPackage={setSelectedPackageId}
+        />
       </main>
 
       {/* Studio Footer */}

@@ -1,17 +1,61 @@
-import React, { useState } from 'react';
-import { Send, MessageSquare, Mail, ArrowUpRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Send, MessageSquare, Mail, ArrowUpRight, CheckCircle2, AlertCircle, Copy, Check, Globe2, Tag } from 'lucide-react';
+import {
+  COUNTRIES,
+  PRICING_TIERS_META,
+  getCountryConfig,
+  getTierPrice
+} from '../data/pricingData';
 
-export const Contact: React.FC = () => {
+interface ContactProps {
+  selectedCountryCode: string;
+  onSelectCountry: (countryCode: string) => void;
+  selectedPackageId: string | null;
+  onSelectPackage: (packageId: string | null) => void;
+}
+
+export const Contact: React.FC<ContactProps> = ({
+  selectedCountryCode,
+  onSelectCountry,
+  selectedPackageId,
+  onSelectPackage,
+}) => {
+  const currentCountry = getCountryConfig(selectedCountryCode);
+
+  const getBudgetsForCurrency = (symbol: string, code: string) => {
+    if (code === 'INR') {
+      return ['₹1,000 – ₹5,000', '₹5,000 – ₹15,000', '₹15,000 – ₹30,000', '₹30,000+'];
+    }
+    return [
+      `${symbol}50 – ${symbol}250`,
+      `${symbol}250 – ${symbol}1,000`,
+      `${symbol}1,000 – ${symbol}3,000`,
+      `${symbol}3,000+`
+    ];
+  };
+
+  const currentBudgets = getBudgetsForCurrency(currentCountry.symbol, currentCountry.currency);
+
   const [formData, setFormData] = useState({
     name: '',
+    business: '',
     email: '',
     projectType: '3D Web Experience',
-    budget: '$5,000 – $10,000',
+    budget: currentBudgets[1],
     message: '',
   });
 
+  // Keep budget updated when currency changes if using defaults
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      budget: getBudgetsForCurrency(currentCountry.symbol, currentCountry.currency)[1]
+    }));
+  }, [selectedCountryCode]);
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const projectTypes = [
     '3D Web Experience',
@@ -21,12 +65,11 @@ export const Contact: React.FC = () => {
     'Other / Advisory',
   ];
 
-  const budgetRanges = [
-    '$3,000 – $5,000',
-    '$5,000 – $10,000',
-    '$10,000 – $25,000',
-    '$25,000+',
-  ];
+  const selectedTier = PRICING_TIERS_META.find((t) => t.id === selectedPackageId);
+  const startingPrice = selectedPackageId
+    ? getTierPrice(selectedCountryCode, selectedPackageId)
+    : 'Custom Quote';
+  const packageName = selectedTier ? selectedTier.name : 'Custom / Open Discussion';
 
   const validate = () => {
     const errs: Record<string, string> = {};
@@ -51,17 +94,96 @@ export const Contact: React.FC = () => {
     setSubmitted(true);
   };
 
-  // Direct WhatsApp formatted link
-  const whatsappUrl = `https://wa.me/7219083021?text=${encodeURIComponent(
-    `Hello Sumit, I would like to discuss a project with SUMITRIX.\n\nName: ${formData.name || 'Visitor'}\nEmail: ${formData.email || 'N/A'}\nType: ${formData.projectType}\nBudget: ${formData.budget}\nBrief: ${formData.message || 'Consultation inquiry'}`
-  )}`;
+  // Structured messages with country, currency, package, and starting price
+  const getFormWhatsAppMessage = () => [
+    'Hello Sumit! I visited your SUMITRIX website and would like to discuss a project.',
+    '',
+    `Name: ${formData.name.trim() || 'Visitor'}`,
+    `Business: ${formData.business.trim() || 'N/A'}`,
+    `Country: ${currentCountry.name}`,
+    `Currency: ${currentCountry.currency} (${currentCountry.symbol})`,
+    `Package: ${packageName}`,
+    `Starting price: ${startingPrice}`,
+    `Project type: ${formData.projectType}`,
+    `Budget: ${formData.budget}`,
+    `Project details: ${formData.message.trim() || 'Consultation inquiry'}`,
+    '',
+    'Please let me know the next steps. Thank you!',
+  ].join('\n');
 
-  // Direct Mailto formatted link
-  const mailtoUrl = `mailto:sumitwaghade240@gmail.com?subject=${encodeURIComponent(
-    `SUMITRIX Project Inquiry: ${formData.projectType} [${formData.name || 'New Client'}]`
-  )}&body=${encodeURIComponent(
-    `Name: ${formData.name}\nEmail: ${formData.email}\nProject Type: ${formData.projectType}\nBudget Range: ${formData.budget}\n\nProject Scope:\n${formData.message}`
-  )}`;
+  const defaultWhatsAppMessage = [
+    'Hello Sumit! I visited your SUMITRIX website and would like to discuss a project.',
+    '',
+    'Name: [Visitor\'s name]',
+    'Business: [Business name]',
+    `Country: ${currentCountry.name}`,
+    `Currency: ${currentCountry.currency} (${currentCountry.symbol})`,
+    `Package: ${packageName}`,
+    `Starting price: ${startingPrice}`,
+    'Project type: [Project type]',
+    'Budget: [Selected budget]',
+    'Project details: [Project description]',
+    '',
+    'Please let me know the next steps. Thank you!',
+  ].join('\n');
+
+  const emailSubject = `SUMITRIX Project Enquiry - ${packageName}`;
+
+  const getFormEmailBody = () => [
+    'Hello Sumit,',
+    '',
+    'I visited your SUMITRIX website and would like to discuss a project.',
+    '',
+    `Name: ${formData.name.trim() || 'Visitor'}`,
+    `Business: ${formData.business.trim() || 'N/A'}`,
+    `Country: ${currentCountry.name}`,
+    `Currency: ${currentCountry.currency} (${currentCountry.symbol})`,
+    `Package: ${packageName}`,
+    `Starting price: ${startingPrice}`,
+    `Project type: ${formData.projectType}`,
+    `Budget: ${formData.budget}`,
+    `Project details: ${formData.message.trim() || 'Consultation inquiry'}`,
+    '',
+    'Please let me know the next steps.',
+    '',
+    'Thank you!',
+  ].join('\n');
+
+  const defaultEmailBody = [
+    'Hello Sumit,',
+    '',
+    'I visited your SUMITRIX website and would like to discuss a project.',
+    '',
+    'Name: [Visitor\'s name]',
+    'Business: [Business name]',
+    `Country: ${currentCountry.name}`,
+    `Currency: ${currentCountry.currency} (${currentCountry.symbol})`,
+    `Package: ${packageName}`,
+    `Starting price: ${startingPrice}`,
+    'Project type: [Project type]',
+    'Budget: [Selected budget]',
+    'Project details: [Project description]',
+    '',
+    'Please let me know the next steps.',
+    '',
+    'Thank you!',
+  ].join('\n');
+
+  // Form generated links
+  const formWhatsAppUrl = `https://wa.me/917219083021?text=${encodeURIComponent(getFormWhatsAppMessage())}`;
+  const formMailtoUrl = `mailto:sumitwaghade240@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(getFormEmailBody())}`;
+
+  // Direct sidebar links
+  const directWhatsAppUrl = `https://wa.me/917219083021?text=${encodeURIComponent(defaultWhatsAppMessage)}`;
+  const directMailtoUrl = `mailto:sumitwaghade240@gmail.com?subject=${encodeURIComponent('SUMITRIX Project Enquiry')}&body=${encodeURIComponent(defaultEmailBody)}`;
+
+  const handleCopyBrief = () => {
+    const briefText = getFormWhatsAppMessage();
+    navigator.clipboard.writeText(briefText).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    });
+  };
 
   return (
     <section id="contact" className="relative py-32 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/10">
@@ -78,7 +200,7 @@ export const Contact: React.FC = () => {
       </div>
 
       <div className="mt-16 grid grid-cols-1 lg:grid-cols-12 gap-16">
-        {/* Contact Form */}
+        {/* Contact Form Area */}
         <div className="lg:col-span-7">
           {submitted ? (
             <div className="p-8 md:p-12 rounded-2xl glass-panel-glow border border-neon-lime/40 animate-in fade-in zoom-in-95 duration-300">
@@ -89,12 +211,18 @@ export const Contact: React.FC = () => {
                 </h3>
               </div>
               <p className="text-gray-300 font-light leading-relaxed mb-6">
-                Your project scope is ready to dispatch. Choose your preferred channel to connect immediately:
+                Your project brief has been compiled with regional currency and package parameters. Review below, copy the text, or dispatch directly via WhatsApp or Email:
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              {/* Prepared Brief Summary Box */}
+              <div className="mb-6 p-4 rounded-xl bg-dark-900 border border-white/10 font-mono text-xs text-gray-300 whitespace-pre-wrap leading-relaxed max-h-56 overflow-y-auto select-all">
+                {getFormWhatsAppMessage()}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-4">
                 <a
-                  href={whatsappUrl}
+                  href={formWhatsAppUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 py-3.5 px-6 rounded-xl bg-neon-lime text-black font-mono font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-white transition-colors"
@@ -103,7 +231,7 @@ export const Contact: React.FC = () => {
                   <span>Send via WhatsApp</span>
                 </a>
                 <a
-                  href={mailtoUrl}
+                  href={formMailtoUrl}
                   className="flex-1 py-3.5 px-6 rounded-xl glass-panel border border-white/20 text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:border-neon-lime hover:text-neon-lime transition-colors"
                 >
                   <Mail className="w-4 h-4" />
@@ -111,21 +239,124 @@ export const Contact: React.FC = () => {
                 </a>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setSubmitted(false)}
-                className="text-xs font-mono text-gray-400 hover:text-white underline underline-offset-4"
-              >
-                ← Edit brief information
-              </button>
+              {/* Secondary Controls: Copy & Edit */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/10">
+                <button
+                  type="button"
+                  onClick={handleCopyBrief}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-900 border border-white/15 text-xs font-mono text-gray-300 hover:text-neon-lime hover:border-neon-lime/40 transition-colors"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-neon-lime" />
+                      <span className="text-neon-lime font-bold">Brief Copied to Clipboard! ✓</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy Project Brief</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSubmitted(false)}
+                  className="text-xs font-mono text-gray-400 hover:text-white underline underline-offset-4"
+                >
+                  ← Edit brief details
+                </button>
+              </div>
+
+              <p className="mt-4 text-[11px] font-mono text-gray-500 leading-normal">
+                * Note: &ldquo;Send via WhatsApp&rdquo; opens WhatsApp in a new tab with your pre-filled message. &ldquo;Send via Email Client&rdquo; opens your default mail application addressed to sumitwaghade240@gmail.com.
+              </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate className="space-y-6">
+              {/* Selected Package Badge & Quick Switcher */}
+              <div className="p-4 rounded-xl bg-dark-900/80 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <Tag className="w-4 h-4 text-neon-lime shrink-0" />
+                  <div>
+                    <span className="block font-mono text-[10px] uppercase tracking-wider text-gray-400">
+                      Selected Scope Package
+                    </span>
+                    <span className="text-xs font-display font-bold text-white">
+                      {packageName} • <span className="text-neon-lime">Starting at {startingPrice}</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => onSelectPackage(null)}
+                    className={`px-2 py-1 rounded text-[10px] font-mono transition-colors ${
+                      selectedPackageId === null
+                        ? 'bg-neon-lime text-black font-bold'
+                        : 'bg-white/5 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    Custom
+                  </button>
+                  {PRICING_TIERS_META.map((tier) => (
+                    <button
+                      key={tier.id}
+                      type="button"
+                      onClick={() => onSelectPackage(tier.id)}
+                      className={`px-2 py-1 rounded text-[10px] font-mono transition-colors ${
+                        selectedPackageId === tier.id
+                          ? 'bg-neon-lime text-black font-bold'
+                          : 'bg-white/5 text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      {tier.name.replace(' Starter', '')}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Country & Currency Selector Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="country-select" className="block font-mono text-xs text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <Globe2 className="w-3.5 h-3.5 text-neon-lime" />
+                    <span>Your Country *</span>
+                  </label>
+                  <select
+                    id="country-select"
+                    value={selectedCountryCode}
+                    onChange={(e) => onSelectCountry(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-dark-900 border border-white/10 focus:border-neon-lime text-white font-sans text-sm outline-none transition-colors appearance-none cursor-pointer"
+                  >
+                    {COUNTRIES.map((country) => (
+                      <option key={country.code} value={country.code} className="bg-dark-950 text-white">
+                        {country.flag} {country.name} ({country.currency} · {country.symbol})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-mono text-xs text-gray-400 uppercase tracking-wider mb-2">
+                    Preferred Currency (Automatic)
+                  </label>
+                  <div className="w-full px-4 py-3 rounded-xl bg-dark-900/60 border border-white/5 text-neon-lime font-mono text-sm flex items-center justify-between">
+                    <span>{currentCountry.currency} ({currentCountry.symbol})</span>
+                    <span className="text-[10px] text-gray-400 uppercase font-sans">
+                      {currentCountry.name}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Name & Business Row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {/* Name */}
                 <div>
                   <label htmlFor="name" className="block font-mono text-xs text-gray-400 uppercase tracking-wider mb-2">
-                    Your Name / Studio *
+                    Your Name *
                   </label>
                   <input
                     id="name"
@@ -133,8 +364,9 @@ export const Contact: React.FC = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Alex Rivera"
-                    className={`w-full px-4 py-3 rounded-xl bg-dark-900 border ${errors.name ? 'border-red-500' : 'border-white/10 focus:border-neon-lime'
-                      } text-white font-sans text-sm outline-none transition-colors`}
+                    className={`w-full px-4 py-3 rounded-xl bg-dark-900 border ${
+                      errors.name ? 'border-red-500' : 'border-white/10 focus:border-neon-lime'
+                    } text-white font-sans text-sm outline-none transition-colors`}
                   />
                   {errors.name && (
                     <span className="text-[11px] font-mono text-red-400 mt-1 block flex items-center gap-1">
@@ -143,26 +375,42 @@ export const Contact: React.FC = () => {
                   )}
                 </div>
 
-                {/* Email */}
+                {/* Business / Brand Name */}
                 <div>
-                  <label htmlFor="email" className="block font-mono text-xs text-gray-400 uppercase tracking-wider mb-2">
-                    Email Address *
+                  <label htmlFor="business" className="block font-mono text-xs text-gray-400 uppercase tracking-wider mb-2">
+                    Business / Brand Name
                   </label>
                   <input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="alex@studio.com"
-                    className={`w-full px-4 py-3 rounded-xl bg-dark-900 border ${errors.email ? 'border-red-500' : 'border-white/10 focus:border-neon-lime'
-                      } text-white font-sans text-sm outline-none transition-colors`}
+                    id="business"
+                    type="text"
+                    value={formData.business}
+                    onChange={(e) => setFormData({ ...formData, business: e.target.value })}
+                    placeholder="e.g. Studio Vertex or Personal"
+                    className="w-full px-4 py-3 rounded-xl bg-dark-900 border border-white/10 focus:border-neon-lime text-white font-sans text-sm outline-none transition-colors"
                   />
-                  {errors.email && (
-                    <span className="text-[11px] font-mono text-red-400 mt-1 block flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" /> {errors.email}
-                    </span>
-                  )}
                 </div>
+              </div>
+
+              {/* Email */}
+              <div>
+                <label htmlFor="email" className="block font-mono text-xs text-gray-400 uppercase tracking-wider mb-2">
+                  Email Address *
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="alex@studio.com"
+                  className={`w-full px-4 py-3 rounded-xl bg-dark-900 border ${
+                    errors.email ? 'border-red-500' : 'border-white/10 focus:border-neon-lime'
+                  } text-white font-sans text-sm outline-none transition-colors`}
+                />
+                {errors.email && (
+                  <span className="text-[11px] font-mono text-red-400 mt-1 block flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> {errors.email}
+                  </span>
+                )}
               </div>
 
               {/* Project Type */}
@@ -176,10 +424,11 @@ export const Contact: React.FC = () => {
                       key={type}
                       type="button"
                       onClick={() => setFormData({ ...formData, projectType: type })}
-                      className={`px-3.5 py-2 rounded-lg text-xs font-mono transition-all ${formData.projectType === type
+                      className={`px-3.5 py-2 rounded-lg text-xs font-mono transition-all ${
+                        formData.projectType === type
                           ? 'bg-neon-lime text-black font-semibold'
                           : 'bg-dark-900 border border-white/10 text-gray-300 hover:border-white/30'
-                        }`}
+                      }`}
                     >
                       {type}
                     </button>
@@ -187,21 +436,27 @@ export const Contact: React.FC = () => {
                 </div>
               </div>
 
-              {/* Budget Range */}
+              {/* Budget Range (in selected country's currency) */}
               <div>
-                <label className="block font-mono text-xs text-gray-400 uppercase tracking-wider mb-2">
-                  Estimated Budget
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block font-mono text-xs text-gray-400 uppercase tracking-wider">
+                    Estimated Budget ({currentCountry.currency})
+                  </label>
+                  <span className="font-mono text-[10px] text-neon-lime">
+                    Currency: {currentCountry.currency} ({currentCountry.symbol})
+                  </span>
+                </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {budgetRanges.map((budget) => (
+                  {currentBudgets.map((budget) => (
                     <button
                       key={budget}
                       type="button"
                       onClick={() => setFormData({ ...formData, budget })}
-                      className={`px-3 py-2 rounded-lg text-xs font-mono text-center transition-all ${formData.budget === budget
+                      className={`px-3 py-2 rounded-lg text-xs font-mono text-center transition-all ${
+                        formData.budget === budget
                           ? 'bg-neon-lime text-black font-semibold'
                           : 'bg-dark-900 border border-white/10 text-gray-300 hover:border-white/30'
-                        }`}
+                      }`}
                     >
                       {budget}
                     </button>
@@ -220,8 +475,9 @@ export const Contact: React.FC = () => {
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder="Tell me about your timeline, vision, technical requirements, and objectives..."
-                  className={`w-full px-4 py-3 rounded-xl bg-dark-900 border ${errors.message ? 'border-red-500' : 'border-white/10 focus:border-neon-lime'
-                    } text-white font-sans text-sm outline-none transition-colors resize-none`}
+                  className={`w-full px-4 py-3 rounded-xl bg-dark-900 border ${
+                    errors.message ? 'border-red-500' : 'border-white/10 focus:border-neon-lime'
+                  } text-white font-sans text-sm outline-none transition-colors resize-none`}
                 />
                 {errors.message && (
                   <span className="text-[11px] font-mono text-red-400 mt-1 block flex items-center gap-1">
@@ -254,10 +510,10 @@ export const Contact: React.FC = () => {
                 Direct Inquiries
               </span>
               <a
-                href="mailto:hello@sumitrix.dev"
-                className="font-display font-bold text-xl sm:text-2xl text-white hover:text-neon-lime transition-colors block"
+                href={directMailtoUrl}
+                className="font-display font-bold text-lg sm:text-xl md:text-2xl text-white hover:text-neon-lime transition-colors block break-all"
               >
-                hello@sumitrix.dev
+                sumitwaghade240@gmail.com
               </a>
               <span className="block font-mono text-xs text-gray-400 mt-1">
                 Sumit Waghade • Typical reply window: within 24 business hours.
@@ -269,7 +525,7 @@ export const Contact: React.FC = () => {
                 Instant Chat & WhatsApp
               </span>
               <a
-                href={whatsappUrl}
+                href={directWhatsAppUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 font-display font-bold text-xl text-white hover:text-neon-lime transition-colors"
@@ -283,7 +539,7 @@ export const Contact: React.FC = () => {
             </div>
           </div>
 
-          {/* Social Profiles with clean SVG icons */}
+          {/* Social Profiles */}
           <div className="pt-8 border-t border-white/10">
             <span className="block font-mono text-xs text-gray-400 uppercase tracking-widest mb-4">
               Digital Coordinates
