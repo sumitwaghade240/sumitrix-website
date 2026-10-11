@@ -1,7 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, Suspense, lazy } from 'react';
 import gsap from 'gsap';
-import { SceneCanvas } from './3d/SceneCanvas';
 import { ArrowDown, Terminal } from 'lucide-react';
+
+const SceneCanvas = lazy(() =>
+  import('./3d/SceneCanvas').then((m) => ({ default: m.SceneCanvas }))
+);
 
 interface HeroProps {
   onShatterStateChange?: (shattered: boolean) => void;
@@ -72,7 +75,20 @@ export const Hero: React.FC<HeroProps> = ({ onShatterStateChange }) => {
     >
       {/* 3D Interactive Canvas Layer (Center/Background) */}
       <div className="absolute inset-0 z-10 pointer-events-auto">
-        <SceneCanvas onShatterChange={onShatterStateChange} />
+        <Suspense
+          fallback={
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="relative w-64 h-64 rounded-full border border-neon-lime/20 bg-dark-900/40 backdrop-blur-md flex items-center justify-center animate-pulse-slow">
+                <div className="w-48 h-48 rounded-full border border-neon-lime/40 animate-ping opacity-25" />
+                <span className="text-[10px] font-mono tracking-widest uppercase text-neon-lime/60">
+                  Initializing 3D Shaders...
+                </span>
+              </div>
+            </div>
+          }
+        >
+          <SceneCanvas onShatterChange={onShatterStateChange} />
+        </Suspense>
       </div>
 
       {/* Hero Foreground Content */}

@@ -14,7 +14,7 @@
   - Establish `.planning/` directory structure with evidence-backed documentation.
   - Verify baseline production build (`tsc && vite build`).
 
-- [ ] **Phase 2: Bundle Optimization & Asset Resilience**
+- [x] **Phase 2: Bundle Optimization & Asset Resilience**
   - Configure Rollup chunk splitting in `vite.config.ts` (`three`, `lucide`, `framer-motion`).
   - Eliminate the 500kB+ bundle size warning.
   - Establish local asset fallbacks for critical external demo photography.

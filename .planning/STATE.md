@@ -3,7 +3,7 @@
 **Project:** SUMITRIX — Creative Developer Portfolio & Multi-Niche Showcase  
 **Repository:** `sumitwaghade240/sumitrix-website`  
 **Current Milestone:** M1 (Baseline Stabilization & Codebase Consolidation)  
-**Active Phase:** Phase 2 (Planned, ready for execution)  
+**Active Phase:** Phase 2 (Completed) → Phase 3 (Ready for planning)  
 **Last Updated:** 2026-10-11  
 
 ---
@@ -11,8 +11,9 @@
 ## 1. Current Status
 
 - **Onboarding Status**: Completed brownfield onboarding via `/gsd-onboard`.
-- **Build Status**: Verified healthy. `npm run build` runs `tsc && vite build` and generates `dist/` in ~10 seconds with 0 errors.
-- **Planning Structure**: Complete `.planning/` initialized with 7 codebase maps, project specifications, requirements, roadmap, and Phase 2 plan.
+- **Build Status**: Verified healthy with zero warnings. `npm run build` runs `tsc && vite build` and generates modular chunks in ~8 seconds.
+- **Bundle Metrics**: Entrypoint JavaScript down to 58.13 kB (95.3% reduction). Three.js engine and React Three Fiber cleanly code-split into asynchronous chunks.
+- **Planning Structure**: Complete `.planning/` initialized with 7 codebase maps, project specifications, requirements, roadmap, and Phase 2 verification.
 
 ---
 
@@ -26,11 +27,11 @@
 3. **No Database Requirement**:
    - The project strictly preserves ₹0 runtime operating expenses by avoiding external databases, CMS servers, or paid payment gateway APIs.
 4. **Bundle Strategy**:
-   - Split vendor chunks into `vendor-three`, `vendor-animation`, `vendor-react`, and `vendor-icons`. Lazy-load 3D canvas in Hero.
+   - Split vendor chunks into `vendor-three-core`, `vendor-three-react`, `vendor-animation`, `vendor-react`, and `vendor-icons`. Lazy-load 3D canvas in Hero.
 
 ---
 
 ## 3. Immediate Next Steps
 
-1. Run `/gsd-execute-phase 2` to execute Wave 1 through Wave 3.
-2. Verify production bundle size reduction and zero Rollup chunk warnings.
+1. Run `/gsd-plan-phase 3` to plan Repository Hygiene & Legacy Alignment.
+2. Deprecate dormant root legacy duplicates (`script.js`, `style.css`) while verifying canonical `legacy_portfolio/`.

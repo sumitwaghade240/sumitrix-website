@@ -76,14 +76,26 @@ export const Projects: React.FC = () => {
               <div className="w-full lg:w-7/12 relative rounded-2xl overflow-hidden glass-panel border border-white/10 group-hover:border-neon-lime/40 transition-all duration-500 shadow-2xl">
                 {/* Visual Aspect Container */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-dark-900">
+                  {/* Atmospheric fallback grid pattern */}
+                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-dark-900 via-dark-850 to-dark-950">
+                    <div className="w-full h-full opacity-25 bg-[radial-gradient(#ccff00_1px,transparent_1px)] [background-size:16px_16px]" />
+                    <div className="absolute font-mono text-[11px] tracking-wider uppercase text-neon-lime/40">
+                      // {project.title} PREVIEW
+                    </div>
+                  </div>
+
                   <img
                     src={project.featuredImage}
                     alt={`${project.title} Preview Mockup`}
-                    className="w-full h-full object-cover object-center filter grayscale-[35%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
+                    className="relative z-10 w-full h-full object-cover object-center filter grayscale-[35%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
                     loading="lazy"
+                    decoding="async"
+                    onError={(e) => {
+                      e.currentTarget.style.opacity = '0';
+                    }}
                   />
                   {/* Subtle Gradient & Glass Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/20 to-transparent" />
+                  <div className="absolute inset-0 z-10 bg-gradient-to-t from-dark-950 via-dark-950/20 to-transparent pointer-events-none" />
 
                   {/* Corner Index Tag */}
                   <div className="absolute top-4 left-4 px-3 py-1 rounded-md glass-panel border border-white/10 font-mono text-[11px] text-white">
