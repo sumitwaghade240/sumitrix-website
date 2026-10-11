@@ -52,12 +52,12 @@ export const Contact: React.FC = () => {
   };
 
   // Direct WhatsApp formatted link
-  const whatsappUrl = `https://wa.me/919999999999?text=${encodeURIComponent(
+  const whatsappUrl = `https://wa.me/7219083021?text=${encodeURIComponent(
     `Hello Sumit, I would like to discuss a project with SUMITRIX.\n\nName: ${formData.name || 'Visitor'}\nEmail: ${formData.email || 'N/A'}\nType: ${formData.projectType}\nBudget: ${formData.budget}\nBrief: ${formData.message || 'Consultation inquiry'}`
   )}`;
 
   // Direct Mailto formatted link
-  const mailtoUrl = `mailto:hello@sumitrix.dev?subject=${encodeURIComponent(
+  const mailtoUrl = `mailto:sumitwaghade240@gmail.com?subject=${encodeURIComponent(
     `SUMITRIX Project Inquiry: ${formData.projectType} [${formData.name || 'New Client'}]`
   )}&body=${encodeURIComponent(
     `Name: ${formData.name}\nEmail: ${formData.email}\nProject Type: ${formData.projectType}\nBudget Range: ${formData.budget}\n\nProject Scope:\n${formData.message}`
@@ -133,9 +133,8 @@ export const Contact: React.FC = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Alex Rivera"
-                    className={`w-full px-4 py-3 rounded-xl bg-dark-900 border ${
-                      errors.name ? 'border-red-500' : 'border-white/10 focus:border-neon-lime'
-                    } text-white font-sans text-sm outline-none transition-colors`}
+                    className={`w-full px-4 py-3 rounded-xl bg-dark-900 border ${errors.name ? 'border-red-500' : 'border-white/10 focus:border-neon-lime'
+                      } text-white font-sans text-sm outline-none transition-colors`}
                   />
                   {errors.name && (
                     <span className="text-[11px] font-mono text-red-400 mt-1 block flex items-center gap-1">
@@ -155,9 +154,8 @@ export const Contact: React.FC = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="alex@studio.com"
-                    className={`w-full px-4 py-3 rounded-xl bg-dark-900 border ${
-                      errors.email ? 'border-red-500' : 'border-white/10 focus:border-neon-lime'
-                    } text-white font-sans text-sm outline-none transition-colors`}
+                    className={`w-full px-4 py-3 rounded-xl bg-dark-900 border ${errors.email ? 'border-red-500' : 'border-white/10 focus:border-neon-lime'
+                      } text-white font-sans text-sm outline-none transition-colors`}
                   />
                   {errors.email && (
                     <span className="text-[11px] font-mono text-red-400 mt-1 block flex items-center gap-1">
@@ -178,11 +176,10 @@ export const Contact: React.FC = () => {
                       key={type}
                       type="button"
                       onClick={() => setFormData({ ...formData, projectType: type })}
-                      className={`px-3.5 py-2 rounded-lg text-xs font-mono transition-all ${
-                        formData.projectType === type
+                      className={`px-3.5 py-2 rounded-lg text-xs font-mono transition-all ${formData.projectType === type
                           ? 'bg-neon-lime text-black font-semibold'
                           : 'bg-dark-900 border border-white/10 text-gray-300 hover:border-white/30'
-                      }`}
+                        }`}
                     >
                       {type}
                     </button>
@@ -201,11 +198,10 @@ export const Contact: React.FC = () => {
                       key={budget}
                       type="button"
                       onClick={() => setFormData({ ...formData, budget })}
-                      className={`px-3 py-2 rounded-lg text-xs font-mono text-center transition-all ${
-                        formData.budget === budget
+                      className={`px-3 py-2 rounded-lg text-xs font-mono text-center transition-all ${formData.budget === budget
                           ? 'bg-neon-lime text-black font-semibold'
                           : 'bg-dark-900 border border-white/10 text-gray-300 hover:border-white/30'
-                      }`}
+                        }`}
                     >
                       {budget}
                     </button>
@@ -224,9 +220,8 @@ export const Contact: React.FC = () => {
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder="Tell me about your timeline, vision, technical requirements, and objectives..."
-                  className={`w-full px-4 py-3 rounded-xl bg-dark-900 border ${
-                    errors.message ? 'border-red-500' : 'border-white/10 focus:border-neon-lime'
-                  } text-white font-sans text-sm outline-none transition-colors resize-none`}
+                  className={`w-full px-4 py-3 rounded-xl bg-dark-900 border ${errors.message ? 'border-red-500' : 'border-white/10 focus:border-neon-lime'
+                    } text-white font-sans text-sm outline-none transition-colors resize-none`}
                 />
                 {errors.message && (
                   <span className="text-[11px] font-mono text-red-400 mt-1 block flex items-center gap-1">
@@ -279,7 +274,7 @@ export const Contact: React.FC = () => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 font-display font-bold text-xl text-white hover:text-neon-lime transition-colors"
               >
-                <span>+91 99999 99999</span>
+                <span>+91 7219083021</span>
                 <ArrowUpRight className="w-4 h-4 text-neon-lime" />
               </a>
               <span className="block font-mono text-xs text-gray-400 mt-1">
