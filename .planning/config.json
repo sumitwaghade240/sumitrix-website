@@ -1,0 +1,12 @@
+{
+  "project": {
+    "name": "sumitrix-creative-portfolio",
+    "version": "1.0.0",
+    "type": "web-application",
+    "framework": "react-vite-threejs"
+  },
+  "workflow": {
+    "auto_commit": true,
+    "verify_build": true
+  }
+}
